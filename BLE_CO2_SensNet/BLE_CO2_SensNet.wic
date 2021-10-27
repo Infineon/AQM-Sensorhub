@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<BLE_Smart_Designer>
+    <Chip>20719-B1</Chip>
+    <Designer>WICED 20719-B1</Designer>
+    <DeviceSettings>
+        <Name>BLE_CO2_SensNet</Name>
+        <Appearance>Unknown</Appearance>
+        <BluetoothMode>Single Mode LE</BluetoothMode>
+        <Button>false</Button>
+        <UART>false</UART>
+        <Timer1Sec>false</Timer1Sec>
+        <LED>false</LED>
+        <SPI>false</SPI>
+        <Buzzer>false</Buzzer>
+        <Battery>false</Battery>
+        <GattConfig>
+            <GattDatabase>Enabled</GattDatabase>
+        </GattConfig>
+        <ClassOfDevice>
+            <ServiceClass>
+                <LimitedDiscoverableMode>false</LimitedDiscoverableMode>
+                <Positioning>false</Positioning>
+                <Networking>false</Networking>
+                <Rendering>false</Rendering>
+                <Capturing>false</Capturing>
+                <ObjectTransfer>false</ObjectTransfer>
+                <Audio>false</Audio>
+                <Telephony>false</Telephony>
+                <Information>false</Information>
+            </ServiceClass>
+            <MajorClass>Miscellaneous</MajorClass>
+        </ClassOfDevice>
+    </DeviceSettings>
+    <Service predefined="true" primary="true">
+        <Name>Generic Attribute</Name>
+        <Uuid>1801</Uuid>
+        <Description>Generic Attribute</Description>
+    </Service>
+    <Service predefined="true" primary="true">
+        <Name>Generic Access</Name>
+        <Uuid>1800</Uuid>
+        <Description>The generic_access service contains generic information about the device. All available Characteristics are readonly.</Description>
+        <Characteristic mandatory="true" predefined="true">
+            <Name>Device Name</Name>
+            <Uuid>2A00</Uuid>
+            <Description/>
+            <DataType>org.bluetooth.characteristic.gap.device_name</DataType>
+            <Size>15</Size>
+            <InitialValue>BLE_CO2_SensNet</InitialValue>
+            <Properties>
+                <Read type="Mandatory">true</Read>
+                <Write type="Optional">false</Write>
+                <WriteWithoutResponse type="Excluded">false</WriteWithoutResponse>
+                <SignedWrite type="Excluded">false</SignedWrite>
+                <ReliableWrite type="Excluded">false</ReliableWrite>
+                <Notify type="Excluded">false</Notify>
+                <Indicate type="Excluded">false</Indicate>
+                <WritableAuxiliaries type="Excluded">false</WritableAuxiliaries>
+                <Broadcast type="Excluded">false</Broadcast>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>false</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+        </Characteristic>
+        <Characteristic mandatory="true" predefined="true">
+            <Name>Appearance</Name>
+            <Uuid>2A01</Uuid>
+            <Description>The external appearance of this device. The values are composed of a category (10-bits) and sub-categories (6-bits).</Description>
+            <DataType>org.bluetooth.characteristic.gap.appearance</DataType>
+            <Size>2</Size>
+            <InitialValue>00 00</InitialValue>
+            <Properties>
+                <Read type="Mandatory">true</Read>
+                <Write type="Excluded">false</Write>
+                <WriteWithoutResponse type="Excluded">false</WriteWithoutResponse>
+                <SignedWrite type="Excluded">false</SignedWrite>
+                <ReliableWrite type="Excluded">false</ReliableWrite>
+                <Notify type="Excluded">false</Notify>
+                <Indicate type="Excluded">false</Indicate>
+                <WritableAuxiliaries type="Excluded">false</WritableAuxiliaries>
+                <Broadcast type="Excluded">false</Broadcast>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>false</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+        </Characteristic>
+    </Service>
+    <Service predefined="false" primary="true">
+        <Name>XENSIV_Measurement</Name>
+        <Uuid>9f 63 27 c0 ea 28 4f 06 af f7 5d 29 da da 13 2a</Uuid>
+        <Description>Vendor Specific Service: BLE_App_CO2</Description>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>CO2_Data</Name>
+            <Uuid>84 c4 19 47 68 84 46 38 a8 ec b4 93 63 1e f3 4e</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_App_CO2</Description>
+            <DataType/>
+            <Size>2</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>false</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Measured CO2 Data</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Press_Data</Name>
+            <Uuid>3b d3 a9 97 52 ab 4d a4 ab 1f 95 07 0c 4b 4f 0b</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_App_CO2</Description>
+            <DataType/>
+            <Size>4</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>false</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Measured Pressure Data</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Temp_Data</Name>
+            <Uuid>e4 3c 4a db 2a dc 41 8e ab f0 43 8c af 30 b3 7e</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_App_CO2</Description>
+            <DataType/>
+            <Size>4</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>false</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Measured Temperature Data</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Hum_Data</Name>
+            <Uuid>1f 9a 9c 7e 5a 5c 43 47 b6 44 2f 11 49 a4 1d 42</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet</Description>
+            <DataType/>
+            <Size>4</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>false</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Measured Humidity Data</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+    </Service>
+    <Service predefined="false" primary="true">
+        <Name>XENSIV_Config</Name>
+        <Uuid>dd 21 91 31 f0 2d 4d 4d 9b 26 2c f7 8a 45 19 21</Uuid>
+        <Description>Vendor Specific Service: BLE_App_CO2</Description>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Sample_Rate</Name>
+            <Uuid>1f 06 6d 49 fe 10 4f 10 8d 7c ba 49 c6 e6 20 84</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet</Description>
+            <DataType/>
+            <Size>2</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+                <Write>true</Write>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>true</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Measurement Rate Setting</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Pressure_Compensation</Name>
+            <Uuid>d4 67 8d 6c fa 5e 40 5d b9 31 ac 7e b0 f5 b7 6a</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet(1)</Description>
+            <DataType/>
+            <Size>4</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+                <Write>true</Write>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>true</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Pressure Compensation Setting</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Alarm_Threshold</Name>
+            <Uuid>09 34 f2 76 4f 00 42 42 86 de ba 85 99 7e fb 4f</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet(2)</Description>
+            <DataType/>
+            <Size>2</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+                <Write>true</Write>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>true</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Alarm Threshold Setting</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Offset_Compensation</Name>
+            <Uuid>a1 bf d9 98 0f da 47 1b b2 cf 3d a9 94 fe 8a 6f</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet(3)</Description>
+            <DataType/>
+            <Size>4</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+                <Write>true</Write>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>true</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Offset Compensation Setting</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+    </Service>
+</BLE_Smart_Designer>
