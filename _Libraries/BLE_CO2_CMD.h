@@ -10,7 +10,7 @@
 #include "../_Libraries/SHTC3.h"
 #include "../_Libraries/PASCO2.h"
 #include "../_Libraries/DPS368.h"
-#include "../_Libraries/DHT.h"
+// #include "../_Libraries/DHT.h"
 
 /*******************************************************************
  * Debugging Settings
@@ -75,8 +75,8 @@ void BLE_ReadPASCO2(PASCO2_t* co2, int16_t* CO2_Value, uint16_t PressCompensatio
 void BLE_InitDPS368(DPS368_t* dps368, uint16_t dps368_address);
 DPS368_meas_state_t BLE_ReadDPS368(DPS368_t* dps368);
 
-void BLE_InitDHT22(DHT* dht22);
-void BLE_ReadDHT22(DHT* dht22, float* DHT_Temp, float* DHT_Hum);
+// void BLE_InitDHT22(DHT* dht22);
+// void BLE_ReadDHT22(DHT* dht22, float* DHT_Temp, float* DHT_Hum);
 
 void BLE_InitSHTC3(SHTC3_t* shtc3, uint16_t shtc3_address);
 SHTC3_state_t BLE_ReadSHTC3(SHTC3_t* shtc3, float *SHTC3_Temp, float *SHTC3_Temp_Prec, float *SHTC3_Hum, float *SHTC3_Hum_Prec);
