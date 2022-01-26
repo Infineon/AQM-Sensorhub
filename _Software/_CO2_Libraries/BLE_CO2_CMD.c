@@ -79,7 +79,6 @@
         BLE_InitPASCO2(&PASCO2_Structure, CO2_I2C_ADDRESS, 950);
         BLE_InitDPS368(&DPS368_Structure, DPS368_I2C_ADDRESS);
         BLE_InitSHTC3(&SHTC3_Structure, SHTC3_I2C_ADDRESS);
-        // BLE_InitDHT22(&DHT22_Structure);
 
         wiced_init_timer(&Measurement_Timer, &IRQ_Measurement, 0, WICED_MILLI_SECONDS_PERIODIC_TIMER);
         wiced_start_timer(&Measurement_Timer, CO2_IRQ_MILLISECONDS_TIME);
@@ -116,13 +115,11 @@
         wiced_hal_gpio_set_pin_output(LED_BLUE, ~wiced_hal_gpio_get_pin_output(LED_BLUE));
 
         int16_t CO2_Value = 0;
-        // float DHT22_Temperature, DHT22_Humidity = 0;
         float SHTC3_Temperature, SHTC3_Temperature_Prec, SHTC3_Humidity, SHTC3_Humidity_Prec = 0;
 
         BLE_ReadDPS368(&DPS368_Structure);
         BLE_ReadPASCO2(&PASCO2_Structure, &CO2_Value, DPS368_Structure.pressure);
         BLE_ReadSHTC3(&SHTC3_Structure, &SHTC3_Temperature, &SHTC3_Temperature_Prec, &SHTC3_Humidity, &SHTC3_Humidity_Prec);
-        // BLE_ReadDHT22(&DHT22_Structure, &DHT22_Temperature, &DHT22_Humidity);
 
         ble_co2_sensnet_xensiv_measurement_co2_data[0] = CO2_Value & 0xFF;       // Low Byte
         ble_co2_sensnet_xensiv_measurement_co2_data[1] = (CO2_Value >> 8);       // High Byte
@@ -241,53 +238,89 @@ void BLE_InitPASCO2(PASCO2_t* co2, uint16_t co2_address, uint16_t PressCompensat
     pasco2_init(co2, co2_address);
     wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
 
+    // Soft reset
     pasco2_reset(co2, PASCO2_SRTRG_SOFT_RESET);
-    wiced_rtos_delay_milliseconds(500, ALLOW_THREAD_TO_SLEEP );
+    wiced_rtos_delay_milliseconds(1500, ALLOW_THREAD_TO_SLEEP );
 
+    // Read ID
+    #ifdef DEBUG_MODE
+        WICED_BT_TRACE("PAS CO2 ID: %d (Revision %d)\n", pasco2_getProductId(co2), pasco2_getRevisionId(co2));
+    #endif
+
+    // Check sensor status
+    // WICED_BT_TRACE("PAS CO2 Status: %x, Config: %x\n", pasco2_readRegister(co2, SENS_STS), pasco2_readRegister(co2, MEAS_CFG));
+
+    // Idle Mode
+    pasco2_setOperationMode(co2, PASCO2_OP_MODE_IDLE);
+
+    // Set pressure compensation
     if (PressCompensation) {
-        pasco2_setPressureCompensation(co2, (int) (PressCompensation / 100));
+        pasco2_setPressureCompensation(co2, PressCompensation);
         wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
     }
+
+    // Enable ABOC (this should also make the save FCS calibration effective)
+    pasco2_setBaselineOffsetCompensation(co2, PASCO2_BOC_CFG_ENABLED);
+    wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+
+    // Set measurement rate to 5s (minimum from datasheet)
+    pasco2_setMeasurementPeriodUnsafe(co2, 10);
+    wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+    pasco2_writeRegister(co2, 0x03, 0x0a);
+
+    // Configure continuous mode
+    pasco2_setOperationMode(co2, PASCO2_OP_MODE_CONTINUOUS);
+
+    wiced_rtos_delay_milliseconds(1000, ALLOW_THREAD_TO_SLEEP );
+    pasco2_getAllRegisters(co2);
 }
 
 /*******************************************************************
  *
  ******************************************************************/
-void BLE_ReadPASCO2(PASCO2_t* co2, int16_t *CO2_Value, uint16_t PressCompensation) {
+void BLE_ReadPASCO2(PASCO2_t* co2, int16_t *CO2_Value) {
     #ifdef DEBUG_MODE
-        char Buffer[255] = {0};
-        snprintf(Buffer, sizeof(Buffer), "PAS CO2 Errors: %i | %i | %i\r\n",    (int) pasco2_isCommunicationError(co2),
-                                                                                (int) pasco2_isTemperatureOutOfRange(co2),
-                                                                                (int) pasco2_isVdd12OutOfRange(co2));
-        wiced_hal_puart_print(Buffer);
-        wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+        WICED_BT_TRACE("Check DRDY\n");
 
-        pasco2_clearTemperatureOutOfRange(co2);
-        wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+        uint8_t C_Err = 0;
+        uint8_t T_Err = 0;
+        uint8_t V_Err = 0;
+        C_Err = pasco2_isCommunicationError(co2);
+        T_Err = pasco2_isTemperatureOutOfRange(co2);
+        V_Err = pasco2_isVdd12OutOfRange(co2);
+        WICED_BT_TRACE("PAS CO2 Errors: Comm %d | Temp %d | V12R %d\n", C_Err, T_Err, V_Err);
 
-        pasco2_clearVdd12OutOfRange(co2);
-        wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
-
-        pasco2_clearCommunicationError(co2);
-        wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+        if(C_Err) {
+            pasco2_clearCommunicationError(co2);
+            wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+        }
+        if(T_Err) {
+            pasco2_clearTemperatureOutOfRange(co2);
+            wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+        }
+        if(V_Err) {
+            pasco2_clearVdd12OutOfRange(co2);
+            wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
+        }
     #endif
 
-    if (pasco2_isDataReady(co2))
+    // Poll measurement status
+    if (pasco2_isDataReady(co2)){
         *CO2_Value = pasco2_getCo2Concentration(co2);
-    else
-        *CO2_Value = 0;
 
-    #ifdef DEBUG_MODE
-        snprintf(Buffer, sizeof(Buffer), "PAS CO2: CO2 Concentration: %i ppm\r\n", (int16_t) *CO2_Value);
-        wiced_hal_puart_print(Buffer);
-    #endif
+        #ifdef DEBUG_MODE
+           /* pasco2_getAllRegisters(co2);*/
 
-    /* Update Pressure Compensation for XENSIV PAS CO2 */
-    if (PressCompensation)
-        pasco2_setPressureCompensation(co2, (int) (PressCompensation / 100));
+            pasco2_clearCommunicationError(co2);
+            pasco2_clearTemperatureOutOfRange(co2);
+            pasco2_clearVdd12OutOfRange(co2);
 
-    /* Launch Single CO2 Measurement */
-    pasco2_setOperationMode(co2, PASCO2_OP_MODE_SINGLE);
+            WICED_BT_TRACE("PAS CO2: CO2 Concentration: %i ppm\r\n", (int16_t) *CO2_Value);
+        #endif
+    }
+
+    //    /* Launch Single CO2 Measurement */
+    //    pasco2_setOperationMode(co2, PASCO2_OP_MODE_SINGLE);
 }
 
 /*******************************************************************
@@ -295,6 +328,9 @@ void BLE_ReadPASCO2(PASCO2_t* co2, int16_t *CO2_Value, uint16_t PressCompensatio
  ******************************************************************/
 void BLE_InitDPS368(DPS368_t* dps368, uint16_t dps368_address) {
     DPS368_init((DPS368_t*) dps368, dps368_address);
+    wiced_rtos_delay_milliseconds(500, ALLOW_THREAD_TO_SLEEP );
+
+    BLE_ReadDPS368(&DPS368_Structure);
     wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
 }
 
@@ -305,50 +341,13 @@ DPS368_meas_state_t BLE_ReadDPS368(DPS368_t* dps368) {
     DPS368_meas_state_t Status = DPS368_data_ready(dps368);
 
     #ifdef DEBUG_MODE
-        char Buffer[255] = {0};
         float Temp_Precision = dps368->temperature - (int) dps368->temperature;
         Temp_Precision *= 1000;
 
-        snprintf(Buffer, sizeof(Buffer), "DPS368: Temp: %.2i.%.3i C       |       Press: %i\r\n", (int) dps368->temperature, (int) Temp_Precision, (int) dps368->pressure);
-        wiced_hal_puart_print(Buffer);
+        WICED_BT_TRACE("DPS368: Temp: %.2i.%.3i C       |       Press: %i\r\n", (int) dps368->temperature, (int) Temp_Precision, (int) dps368->pressure);
     #endif
 
     return Status;
-}
-
-/*******************************************************************
- * DHT22 Functions
- ******************************************************************/
-void BLE_InitDHT22(DHT* dht22) {
-    DHTbegin(dht22);    // Initialize DHT22 Pin
-    wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
-}
-
-/*******************************************************************
- *
- ******************************************************************/
-void BLE_ReadDHT22(DHT* dht22, float *DHT_Temp, float *DHT_Hum) {
-    if(DHTread(dht22)){      // Get Temperature and Humidity - Trigger a Sensor package and read it
-        *DHT_Temp = DHTreadTemperature(dht22, 1, 0);   // Read Temperature
-        *DHT_Hum = DHTreadHumidity(dht22, 1);        // Read Humidity
-        wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
-
-        #ifdef DEBUG_MODE
-            char Buffer[255] = {0};
-
-            float DHT_Temp_Precision = *DHT_Temp - (int) *DHT_Temp;
-            DHT_Temp_Precision *= 1000;
-            float DHT_Hum_Precision = *DHT_Hum - (int) *DHT_Hum;
-            DHT_Hum_Precision *= 1000;
-
-            snprintf(Buffer, sizeof(Buffer), "DHT22:  Temp: %.2i.%.3i C       |       Hum: %.2i.%.3i\r\n",    (int) *DHT_Temp, (int) DHT_Temp_Precision,
-                                                                                                              (int) *DHT_Hum, (int) DHT_Hum_Precision);
-            wiced_hal_puart_print(Buffer);
-        #endif
-    } else {
-        *DHT_Temp = 0;
-        *DHT_Hum = 0;
-    }
 }
 
 /*******************************************************************
@@ -380,10 +379,8 @@ SHTC3_state_t BLE_ReadSHTC3(SHTC3_t* shtc3, float *SHTC3_Temp, float *SHTC3_Temp
     *SHTC3_Hum_Prec *= 1000;
 
     #ifdef DEBUG_MODE
-        char Buffer[255] = {0};
-        snprintf(Buffer, sizeof(Buffer), "SHTC3:  Temp: %.2i.%.3i C       |       Hum: %.2i.%.3i\r\n",    (int) *SHTC3_Temp, (int) *SHTC3_Temp_Prec,
-                                                                                                          (int) *SHTC3_Hum,  (int) *SHTC3_Hum_Prec);
-        wiced_hal_puart_print(Buffer);
+        WICED_BT_TRACE("SHTC3:  Temp: %.2i.%.3i C       |       Hum: %.2i.%.3i\r\n",    (int) *SHTC3_Temp, (int) *SHTC3_Temp_Prec,
+                                                                                        (int) *SHTC3_Hum,  (int) *SHTC3_Hum_Prec);
         wiced_rtos_delay_milliseconds(50, ALLOW_THREAD_TO_SLEEP );
     #endif
 

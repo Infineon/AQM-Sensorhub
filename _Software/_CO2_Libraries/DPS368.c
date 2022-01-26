@@ -58,7 +58,7 @@ DPS368_state_t DPS368_init(DPS368_t* dps, uint8_t i2c_address)
 	DPS368_state_t state = DPS368_ERROR;
 	dps->i2c_address = i2c_address;
 
-	wiced_rtos_delay_milliseconds(200);         // delay(100);
+	wiced_rtos_delay_milliseconds(200, KEEP_THREAD_ACTIVE);         // delay(100);
 
 	uint8_t product_id = DPS368_get_reg(dps, DPS368_PRODUCTID);
 
@@ -69,7 +69,7 @@ DPS368_state_t DPS368_init(DPS368_t* dps, uint8_t i2c_address)
 		//Softreset
 		DPS368_set_reg(dps, DPS368_RESET, 0b1001);
 		do {
-		    wiced_rtos_delay_milliseconds(200);         // delay(100);
+		    wiced_rtos_delay_milliseconds(200, KEEP_THREAD_ACTIVE);         // delay(100);
 			state = DPS368_get_reg(dps, DPS368_MEAS_CFG);
 		}while(!(state & (DPS368_COEF_RDY | DPS368_SENSOR_RDY)));
 
@@ -79,7 +79,7 @@ DPS368_state_t DPS368_init(DPS368_t* dps, uint8_t i2c_address)
 		//get calibration coefficients
 		uint8_t coeff[18] = {0};
 		DPS368_get_data(dps, DPS368_COEF, coeff, sizeof(coeff));
-        wiced_rtos_delay_milliseconds(1000);         // delay(100);
+        wiced_rtos_delay_milliseconds(1000, KEEP_THREAD_ACTIVE);         // delay(100);
         DPS368_get_data(dps, DPS368_COEF, coeff, sizeof(coeff));
 
 		dps->coeff.c0 = (coeff[0] << 4) | (coeff[1] >> 4);

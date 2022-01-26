@@ -7,7 +7,11 @@
 
 #include "wiced.h"
 #include "data_types.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
 #include "wiced_hal_i2c.h"
+#include "wiced_rtos.h"
 
 #ifndef DPS368_H_
 #define DPS368_H_

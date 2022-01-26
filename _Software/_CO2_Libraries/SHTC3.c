@@ -70,17 +70,17 @@ SHTC3_state_t SHTC3_GetID(SHTC3_t* SHTC3){
 
 //------------------------------------------------------------------------------
 SHTC3_state_t SHTC3_Sleep(SHTC3_t* SHTC3) {
-    return SHTC3_WriteCommand(&SHTC3, SLEEP);       // Send SLEEP Command to SHTC3
+    return SHTC3_WriteCommand(SHTC3, SLEEP);       // Send SLEEP Command to SHTC3
 }
 
 //------------------------------------------------------------------------------
 SHTC3_state_t SHTC3_Wakeup(SHTC3_t* SHTC3) {
-    return SHTC3_WriteCommand(&SHTC3, WAKEUP);       // Send WAKEUP Command to SHTC3
+    return SHTC3_WriteCommand(SHTC3, WAKEUP);       // Send WAKEUP Command to SHTC3
 }
 
 //------------------------------------------------------------------------------
 SHTC3_state_t SHTC3_SoftReset(SHTC3_t* SHTC3){
-    return SHTC3_WriteCommand(&SHTC3, SOFT_RESET);       // Send SOFT_RESET Command to SHTC3
+    return SHTC3_WriteCommand(SHTC3, SOFT_RESET);       // Send SOFT_RESET Command to SHTC3
 }
 
 //------------------------------------------------------------------------------
@@ -92,10 +92,12 @@ uint8_t SHTC3_readRegister(SHTC3_t* SHTC3, uint8_t address){
 
     return Recv_Buffer;
 }
+
 //------------------------------------------------------------------------------
 void SHTC3_read(SHTC3_t* SHTC3, uint8_t address, uint8_t* data, uint8_t size) {
     wiced_hal_i2c_combined_read((uint8_t *) data, size, (uint8_t *) &address, sizeof(address), SHTC3->i2c_address);
 }
+
 //------------------------------------------------------------------------------
 static SHTC3_state_t SHTC3_WriteCommand(SHTC3_t* SHTC3, SHTC3_commands_t cmd){
   SHTC3_state_t Error;      // Error code

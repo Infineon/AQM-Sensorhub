@@ -8,9 +8,14 @@
 #ifndef PASCO2_H_
 #define PASCO2_H_
 
+#include "wiced.h"
+#include "data_types.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include "wiced_hal_i2c.h"
+#include "wiced_bt_trace.h"
+// #include "wiced_hal_puart.h"
 
 #define CO2_I2C_ADDRESS 0x28
 
@@ -128,7 +133,10 @@ typedef enum
 {
 	PASCO2_SRTRG_SOFT_RESET = 0xA3,
 	PASCO2_SRTRG_ABOC_CORRECTION_RESET = 0xBC,
+	PASCO2_SRTRG_FORCED_CALIB_SAVE = 0xCF,
+	PASCO2_SRTRG_DISABLE_IIR_FILTER = 0xDF,
 	PASCO2_SRTRG_FORCED_CALIB_RESET = 0xFC,
+	PASCO2_SRTRG_ENABLE_IIR_FILTER = 0xFE,
 }pasco2_srtrg_t;
 
 typedef struct
@@ -152,6 +160,7 @@ void pasco2_clearCommunicationError(PASCO2_t* co2);
 
 int16_t pasco2_getMeasurementPeriod(PASCO2_t* co2);
 void pasco2_setMeasurementPeriod(PASCO2_t* co2, int16_t period);
+void pasco2_setMeasurementPeriodUnsafe(PASCO2_t* co2, int16_t period);
 
 uint8_t pasco2_getPwmEnable(PASCO2_t* co2);
 void pasco2_setPwmEnable(PASCO2_t* co2, uint8_t enable);
@@ -161,6 +170,8 @@ pasco2_boc_cfg_t pasco2_getBaselineOffsetCompensation(PASCO2_t* co2);
 void pasco2_setBaselineOffsetCompensation(PASCO2_t* co2, pasco2_boc_cfg_t boc);
 pasco2_op_mode_t pasco2_getOperationMode(PASCO2_t* co2);
 void pasco2_setOperationMode(PASCO2_t* co2, pasco2_op_mode_t mode);
+
+void pasco2_startFCS(PASCO2_t* co2);
 
 int16_t pasco2_getCo2Concentration(PASCO2_t* co2);
 
@@ -190,5 +201,10 @@ uint8_t pasco2_getScratchPad(PASCO2_t* co2);
 void pasco2_setScratchPad(PASCO2_t* co2, uint8_t scratch);
 
 void pasco2_reset(PASCO2_t* co2, pasco2_srtrg_t rst);
+void pasco2_getAllRegisters(PASCO2_t* co2);
+uint8_t pasco2_getRegisterMeas_cfg(PASCO2_t* co2);
+
+uint8_t pasco2_readRegister(PASCO2_t* co2, uint8_t address);
+void pasco2_writeRegister(PASCO2_t* co2, uint8_t reg, uint8_t val);
 
 #endif /* PASCO2_H_ */

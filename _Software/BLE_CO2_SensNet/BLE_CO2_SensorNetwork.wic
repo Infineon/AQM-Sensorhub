@@ -278,41 +278,6 @@
             </UserDescription>
         </Characteristic>
         <Characteristic mandatory="false" predefined="false">
-            <Name>Pressure_Compensation</Name>
-            <Uuid>d4 67 8d 6c fa 5e 40 5d b9 31 ac 7e b0 f5 b7 6a</Uuid>
-            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet(1)</Description>
-            <DataType/>
-            <Size>4</Size>
-            <InitialValue/>
-            <Properties>
-                <Read>true</Read>
-                <Notify>true</Notify>
-                <Indicate>true</Indicate>
-                <Write>true</Write>
-            </Properties>
-            <Permissions>
-                <VariableLength>false</VariableLength>
-                <Read>true</Read>
-                <Write>true</Write>
-                <WriteWithoutResponse>false</WriteWithoutResponse>
-                <AuthenticatedRead>false</AuthenticatedRead>
-                <ReliableWrite>false</ReliableWrite>
-                <AuthenticatedWrite>false</AuthenticatedWrite>
-            </Permissions>
-            <UserDescription>
-                <Value>Pressure Compensation Setting</Value>
-                <MaximumLength>512</MaximumLength>
-                <Permissions>
-                    <VariableLength>false</VariableLength>
-                    <Read>true</Read>
-                    <Write>false</Write>
-                    <AuthenticatedRead>false</AuthenticatedRead>
-                    <ReliableWrite>false</ReliableWrite>
-                    <AuthenticatedWrite>false</AuthenticatedWrite>
-                </Permissions>
-            </UserDescription>
-        </Characteristic>
-        <Characteristic mandatory="false" predefined="false">
             <Name>Alarm_Threshold</Name>
             <Uuid>09 34 f2 76 4f 00 42 42 86 de ba 85 99 7e fb 4f</Uuid>
             <Description>Vendor Specific Characteristic: BLE_CO2_SensNet(2)</Description>
@@ -371,6 +336,41 @@
             </Permissions>
             <UserDescription>
                 <Value>Offset Compensation Setting</Value>
+                <MaximumLength>512</MaximumLength>
+                <Permissions>
+                    <VariableLength>false</VariableLength>
+                    <Read>true</Read>
+                    <Write>false</Write>
+                    <AuthenticatedRead>false</AuthenticatedRead>
+                    <ReliableWrite>false</ReliableWrite>
+                    <AuthenticatedWrite>false</AuthenticatedWrite>
+                </Permissions>
+            </UserDescription>
+        </Characteristic>
+        <Characteristic mandatory="false" predefined="false">
+            <Name>Enable_Calibration</Name>
+            <Uuid>5c 42 39 28 f8 5a 4d 9c 96 ac f3 07 10 05 4d e6</Uuid>
+            <Description>Vendor Specific Characteristic: BLE_CO2_SensNet</Description>
+            <DataType/>
+            <Size>1</Size>
+            <InitialValue/>
+            <Properties>
+                <Read>true</Read>
+                <Notify>true</Notify>
+                <Indicate>true</Indicate>
+                <Write>true</Write>
+            </Properties>
+            <Permissions>
+                <VariableLength>false</VariableLength>
+                <Read>true</Read>
+                <Write>true</Write>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <AuthenticatedRead>false</AuthenticatedRead>
+                <ReliableWrite>false</ReliableWrite>
+                <AuthenticatedWrite>false</AuthenticatedWrite>
+            </Permissions>
+            <UserDescription>
+                <Value>Variable to Enable Sensor Calibration</Value>
                 <MaximumLength>512</MaximumLength>
                 <Permissions>
                     <VariableLength>false</VariableLength>
